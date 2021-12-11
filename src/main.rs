@@ -1,3 +1,17 @@
+use gtk::prelude::*;
+use gtk::Application;
+
+mod app;
+mod widget;
+
+use app::App;
+
 fn main() {
-    println!("Hello, world!");
+	let application = Application::builder()
+		.application_id("com.xgley.chinese_color_picker")
+		.build();
+
+	application.connect_activate(|app| App::run(app.clone()));
+
+	application.run();
 }
