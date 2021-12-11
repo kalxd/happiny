@@ -2,6 +2,7 @@ use gtk::prelude::*;
 use gtk::Application;
 
 mod app;
+mod store;
 mod widget;
 
 use app::App;
