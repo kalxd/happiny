@@ -1,6 +1,7 @@
 use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, Box, Orientation, ScrolledWindow, TreeView};
+use gtk::{Application, ApplicationWindow, Box, Orientation};
 
+use crate::widget::color_view::ColorView;
 use crate::widget::search_bar::TopSearchBar;
 
 pub struct App {
@@ -18,15 +19,14 @@ impl App {
 
 		let main_layout = Box::builder()
 			.orientation(Orientation::Vertical)
-			.spacing(10)
+			.spacing(0)
 			.build();
 
 		let search_bar = TopSearchBar::new();
 		main_layout.pack_start(search_bar.container(), false, false, 0);
 
-		let table_view = TreeView::new();
-		let scroll_view = ScrolledWindow::builder().child(&table_view).build();
-		main_layout.pack_start(&scroll_view, true, true, 0);
+		let color_view = ColorView::new();
+		main_layout.pack_start(color_view.container(), true, true, 10);
 
 		window.connect_key_press_event(move |_, event| {
 			let b = search_bar.handle_event(event);
