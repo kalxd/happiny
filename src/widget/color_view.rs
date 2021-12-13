@@ -1,5 +1,5 @@
 use gtk::prelude::*;
-use gtk::{CellRendererText, ScrolledWindow, TreeView, TreeViewColumn};
+use gtk::{CellRendererText, ScrolledWindow, TreeView, TreeViewColumn, TreeViewGridLines};
 
 use std::ops::Deref;
 
@@ -14,12 +14,15 @@ pub struct ColorView {
 impl ColorView {
 	pub fn new() -> Self {
 		let store = ColorStore::new();
-		let view = TreeView::with_model(&*store);
+		let view = TreeView::builder()
+			.enable_grid_lines(TreeViewGridLines::Horizontal)
+			.model(&*store)
+			.build();
 		let scroll_window = ScrolledWindow::builder().child(&view).build();
 
 		{
 			let text = CellRendererText::new();
-			let col = TreeViewColumn::builder().title("id").build();
+			let col = TreeViewColumn::builder().title("序号").build();
 			col.pack_start(&text, false);
 			col.add_attribute(&text, "text", 0);
 			view.append_column(&col);
@@ -27,10 +30,33 @@ impl ColorView {
 
 		{
 			let text = CellRendererText::new();
-			let col = TreeViewColumn::builder().title("name").build();
+			let col = TreeViewColumn::builder().title("名称").build();
 			col.pack_start(&text, false);
 			col.add_attribute(&text, "text", 1);
-			col.add_attribute(&text, "placeholder-text", 0);
+			view.append_column(&col);
+		}
+
+		{
+			let text = CellRendererText::new();
+			let col = TreeViewColumn::builder().title("色值").build();
+			col.pack_start(&text, false);
+			col.add_attribute(&text, "text", 2);
+			view.append_column(&col);
+		}
+
+		{
+			let text = CellRendererText::new();
+			let col = TreeViewColumn::builder().title("明亮亮的颜色").build();
+			col.pack_start(&text, false);
+			col.add_attribute(&text, "background", 2);
+			view.append_column(&col);
+		}
+
+		{
+			let text = CellRendererText::new();
+			let col = TreeViewColumn::builder().title("描述").build();
+			col.pack_start(&text, true);
+			col.add_attribute(&text, "text", 3);
 			view.append_column(&col);
 		}
 

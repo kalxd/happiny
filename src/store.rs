@@ -1,4 +1,4 @@
-use glib::types::Type;
+use gtk::glib::types::Type;
 use gtk::prelude::*;
 use gtk::TreeStore;
 use serde::Deserialize;
@@ -33,7 +33,16 @@ impl ColorData {
 
 pub struct ColorStore(TreeStore);
 
-const COL_TYPE: &'static [Type; 4] = &[Type::STRING, Type::STRING, Type::STRING, Type::STRING];
+const COL_TYPE: &'static [Type; 4] = &[
+	// id
+	Type::STRING,
+	// 名称
+	Type::STRING,
+	// 色值
+	Type::STRING,
+	// 描述
+	Type::STRING,
+];
 
 impl ColorStore {
 	pub fn new() -> Self {
@@ -47,8 +56,26 @@ impl ColorStore {
 			let iter = model.append(None);
 			model.set(
 				&iter,
-				&[(0, &(data.id.to_string())), (1, &data.name), (2, &data.hex)],
+				&[
+					(0, &(data.id.to_string())),
+					(1, &data.name),
+					(2, &data.hex),
+					(3, &data.name),
+				],
 			);
+
+			data.colors.iter().for_each(|prop| {
+				let iter = model.append(Some(&iter));
+				model.set(
+					&iter,
+					&[
+						(0, &prop.id),
+						(1, &prop.name),
+						(2, &prop.hex),
+						(3, &prop.intro),
+					],
+				);
+			});
 		});
 
 		return model;
