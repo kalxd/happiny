@@ -4,7 +4,7 @@ use gtk::{SearchBar, SearchEntry};
 use std::ops::Deref;
 
 pub struct TopSearchBar {
-	_entry: SearchEntry,
+	entry: SearchEntry,
 	search_bar: SearchBar,
 }
 
@@ -16,21 +16,18 @@ impl TopSearchBar {
 		search_bar.connect_entry(&entry);
 		search_bar.add(&entry);
 
-		Self {
-			_entry: entry,
-			search_bar,
-		}
+		Self { entry, search_bar }
 	}
 
 	pub fn container(&self) -> &SearchBar {
-		&self
+		&self.search_bar
 	}
 }
 
 impl Deref for TopSearchBar {
-	type Target = SearchBar;
+	type Target = SearchEntry;
 
 	fn deref(&self) -> &Self::Target {
-		&self.search_bar
+		&self.entry
 	}
 }

@@ -25,13 +25,14 @@ impl App {
 		let search_bar = TopSearchBar::new();
 		main_layout.pack_start(search_bar.container(), false, false, 0);
 
-		let color_view = ColorView::new();
-		main_layout.pack_start(color_view.container(), true, true, 10);
-
 		window.connect_key_press_event(move |_, event| {
 			let b = search_bar.handle_event(event);
 			gtk::Inhibit(b)
 		});
+
+		let color_view = ColorView::new();
+		main_layout.pack_start(color_view.container(), true, true, 10);
+
 		window.add(&main_layout);
 
 		Self { window }
