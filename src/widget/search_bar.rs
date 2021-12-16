@@ -3,6 +3,7 @@ use gtk::{SearchBar, SearchEntry};
 
 use std::ops::Deref;
 
+#[derive(Clone)]
 pub struct TopSearchBar {
 	entry: SearchEntry,
 	search_bar: SearchBar,
@@ -21,6 +22,10 @@ impl TopSearchBar {
 
 	pub fn container(&self) -> &SearchBar {
 		&self.search_bar
+	}
+
+	pub fn handle_event(&self, event: &gtk::gdk::EventKey) -> bool {
+		self.search_bar.handle_event(&event)
 	}
 }
 

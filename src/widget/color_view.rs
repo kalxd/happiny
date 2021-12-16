@@ -3,17 +3,18 @@ use gtk::{
 	CellRendererText, ScrolledWindow, TreeModelFilter, TreeView, TreeViewColumn, TreeViewGridLines,
 };
 
-use std::cell::Cell;
+use std::cell::RefCell;
 use std::ops::Deref;
 use std::rc::Rc;
 
 use crate::store::ColorStore;
 
+#[derive(Clone)]
 pub struct ColorView {
 	view: TreeView,
 	scroll_window: ScrolledWindow,
 	_store: ColorStore,
-	search_key: Rc<Cell<Option<String>>>,
+	search_key: Rc<RefCell<Option<String>>>,
 	filter_model: TreeModelFilter,
 }
 
@@ -25,7 +26,8 @@ impl ColorView {
 
 		let view = TreeView::builder()
 			.enable_grid_lines(TreeViewGridLines::Horizontal)
-			.enable_search(false)
+			.enable_search(true)
+			.search_column(0)
 			.model(&*store)
 			.build();
 		let scroll_window = ScrolledWindow::builder().child(&view).build();
@@ -85,12 +87,18 @@ impl ColorView {
 
 	fn connect_signal(&self) {
 		{
-			self.filter_model.set_visible_func(|model, iter| {
-				let name = model.value(iter, 1);
-				println!("{:?}", name);
-				return true;
+			let keyword = self.search_key.clone();
+			self.filter_model.set_visible_func(move |model, iter| {
+				if let Some(text) = &*keyword.borrow() {
+					return model
+						.value(iter, 1)
+						.get()
+						.map(|value: &str| value.contains(text))
+						.unwrap_or(true);
+				}
+
+				return false;
 			});
-			self.filter_model.refilter();
 		}
 	}
 
@@ -102,6 +110,7 @@ impl ColorView {
 		let keyword = keyword.map(String::from);
 		self.search_key.replace(keyword);
 		self.filter_model.refilter();
+		self.view.expand_all();
 	}
 }
 

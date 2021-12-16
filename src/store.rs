@@ -31,6 +31,7 @@ impl ColorData {
 	}
 }
 
+#[derive(Clone)]
 pub struct ColorStore(TreeStore);
 
 const COL_TYPE: &'static [Type; 4] = &[
