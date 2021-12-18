@@ -112,6 +112,13 @@ impl ColorView {
 		self.filter_model.refilter();
 		self.view.expand_all();
 	}
+
+	pub fn selection_hex(&self) -> Option<String> {
+		self.selection().selected().and_then(|(model, iter)| {
+			let name = model.value(&iter, 2);
+			name.get().ok()
+		})
+	}
 }
 
 impl Deref for ColorView {

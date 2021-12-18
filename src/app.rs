@@ -1,5 +1,5 @@
 use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, Box, Orientation};
+use gtk::{AccelGroup, Application, ApplicationWindow, Box, Clipboard, Orientation};
 
 use crate::widget::color_view::ColorView;
 use crate::widget::search_bar::TopSearchBar;
@@ -47,6 +47,23 @@ impl App {
 
 				view.update_filter(keyword);
 			});
+
+			let accel_group = AccelGroup::new();
+			let (accel_key, accel_modifier) = gtk::accelerator_parse("<Control>c");
+			let view = color_view.clone();
+			accel_group.connect_accel_group(
+				accel_key,
+				accel_modifier,
+				gtk::AccelFlags::empty(),
+				move |_, _, _, _| {
+					if let Some(hex) = view.selection_hex() {
+						let clipboard = Clipboard::get(&gtk::gdk::SELECTION_CLIPBOARD);
+						clipboard.set_text(&hex);
+					}
+					return true;
+				},
+			);
+			window.add_accel_group(&accel_group);
 		}
 
 		window.add(&main_layout);
