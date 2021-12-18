@@ -81,7 +81,6 @@ dependencies = [
 name = "chinese_color_picker"
 version = "0.1.0"
 dependencies = [
- "glib",
  "gtk",
  "serde",
  "serde_json",

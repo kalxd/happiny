@@ -26,8 +26,7 @@ impl ColorView {
 
 		let view = TreeView::builder()
 			.enable_grid_lines(TreeViewGridLines::Horizontal)
-			.enable_search(true)
-			.search_column(0)
+			.enable_search(false)
 			.model(&filter_model)
 			.build();
 		let scroll_window = ScrolledWindow::builder().child(&view).build();
