@@ -82,6 +82,7 @@ name = "chinese_color_picker"
 version = "0.1.0"
 dependencies = [
  "gtk",
+ "rgba_simple",
  "serde",
  "serde_json",
 ]
@@ -499,6 +500,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "38bc8cc6a5f2e3655e0899c1b848643b2562f853f114bfec7be120678e3ace05"
 dependencies = [
  "proc-macro2",
+]
+
+[[package]]
+name = "rgba_simple"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "952b0483d7e21df6f3c24f2c76c1f44b27bf84682d499494d4ec53fff2598097"
+dependencies = [
+ "serde",
 ]
 
 [[package]]
