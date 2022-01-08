@@ -7,6 +7,7 @@ use std::cell::RefCell;
 use std::ops::Deref;
 use std::rc::Rc;
 
+use super::tree_menu::TreeMenu;
 use crate::store::ColorStore;
 
 #[derive(Clone)]
@@ -86,6 +87,7 @@ impl ColorView {
 
 	fn connect_signal(&self) {
 		{
+			// 搜索
 			let keyword = self.search_key.clone();
 			self.filter_model.set_visible_func(move |model, iter| {
 				if let Some(text) = &*keyword.borrow() {
@@ -97,6 +99,21 @@ impl ColorView {
 				}
 
 				return true;
+			});
+		}
+
+		{
+			// 右键菜单
+			self.view.connect_button_press_event(|view, event| {
+				if event.button() == 3 {
+					if let Some((_, _)) = view.selection().selected() {
+						let menu = TreeMenu::new("hello");
+						menu.connect_activate(|msg| println!("{:?}", msg));
+						(*menu).popup_easy(event.button(), event.time());
+						(*menu).show_all();
+					}
+				}
+				gtk::Inhibit(false)
 			});
 		}
 	}
