@@ -81,10 +81,19 @@ dependencies = [
 name = "chinese_color_picker"
 version = "0.1.0"
 dependencies = [
+ "css-color-parser2",
  "gtk",
- "rgba_simple",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "css-color-parser2"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cf8ed1639f4b56ec6f31d007ff66ce4a13099dce5a9995d48368a30d62bf04bd"
+dependencies = [
+ "lazy_static",
 ]
 
 [[package]]
@@ -378,6 +387,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b71991ff56294aa922b450139ee08b3bfc70982c6b2c7562771375cf73542dd4"
 
 [[package]]
+name = "lazy_static"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
+
+[[package]]
 name = "libc"
 version = "0.2.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -500,15 +515,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "38bc8cc6a5f2e3655e0899c1b848643b2562f853f114bfec7be120678e3ace05"
 dependencies = [
  "proc-macro2",
-]
-
-[[package]]
-name = "rgba_simple"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "952b0483d7e21df6f3c24f2c76c1f44b27bf84682d499494d4ec53fff2598097"
-dependencies = [
- "serde",
 ]
 
 [[package]]
