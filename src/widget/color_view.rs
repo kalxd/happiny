@@ -98,15 +98,13 @@ impl ColorView {
 			// 搜索
 			let keyword = self.search_key.clone();
 			self.filter_model.set_visible_func(move |model, iter| {
-				if let Some(text) = &*keyword.borrow() {
-					return model
-						.value(iter, 1)
-						.get()
-						.map(|value: &str| value.contains(text))
-						.unwrap_or(true);
-				}
-
-				return true;
+				keyword
+					.borrow()
+					.as_ref()
+					.and_then(|keyword: &String| {
+						selection_value(&model, &iter, 1).map(|value| value.contains(keyword))
+					})
+					.unwrap_or(true)
 			});
 		}
 
