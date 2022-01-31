@@ -11,6 +11,7 @@ use std::rc::Rc;
 use std::str::FromStr;
 
 mod store;
+mod t;
 mod tree_menu;
 
 use store::ColorStore;
@@ -33,7 +34,6 @@ pub struct ColorView {
 impl ColorView {
 	pub fn new() -> Self {
 		let store = ColorStore::new();
-
 		let filter_model = TreeModelFilter::new(&*store, None);
 
 		let view = TreeView::builder()
@@ -47,7 +47,7 @@ impl ColorView {
 			let text = CellRendererText::new();
 			let col = TreeViewColumn::builder().title("序号").build();
 			col.pack_start(&text, false);
-			col.add_attribute(&text, "text", 0);
+			col.add_attribute(&text, "text", t::ColType::ColID as i32);
 			view.append_column(&col);
 		}
 
@@ -55,7 +55,7 @@ impl ColorView {
 			let text = CellRendererText::new();
 			let col = TreeViewColumn::builder().title("名称").build();
 			col.pack_start(&text, false);
-			col.add_attribute(&text, "text", 1);
+			col.add_attribute(&text, "text", t::ColType::ColName as i32);
 			view.append_column(&col);
 		}
 
@@ -63,7 +63,7 @@ impl ColorView {
 			let text = CellRendererText::new();
 			let col = TreeViewColumn::builder().title("色值").build();
 			col.pack_start(&text, false);
-			col.add_attribute(&text, "text", 2);
+			col.add_attribute(&text, "text", t::ColType::ColHex as i32);
 			view.append_column(&col);
 		}
 
@@ -71,7 +71,7 @@ impl ColorView {
 			let text = CellRendererText::new();
 			let col = TreeViewColumn::builder().title("明亮亮的颜色").build();
 			col.pack_start(&text, false);
-			col.add_attribute(&text, "background", 2);
+			col.add_attribute(&text, "background", t::ColType::ColHex as i32);
 			view.append_column(&col);
 		}
 
@@ -79,7 +79,7 @@ impl ColorView {
 			let text = CellRendererText::new();
 			let col = TreeViewColumn::builder().title("描述").build();
 			col.pack_start(&text, true);
-			col.add_attribute(&text, "text", 3);
+			col.add_attribute(&text, "text", t::ColType::ColDesc as i32);
 			view.append_column(&col);
 		}
 

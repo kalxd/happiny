@@ -5,6 +5,8 @@ use serde::Deserialize;
 
 use std::ops::Deref;
 
+use super::t;
+
 const JSON_DATA: &'static str = include_str!("../../data/colors.json");
 
 /// 颜色属性
@@ -58,10 +60,10 @@ impl ColorStore {
 			model.set(
 				&iter,
 				&[
-					(0, &(data.id.to_string())),
-					(1, &data.name),
-					(2, &data.hex),
-					(3, &data.name),
+					(t::ColType::ColID as u32, &(data.id.to_string())),
+					(t::ColType::ColName as u32, &data.name),
+					(t::ColType::ColHex as u32, &data.hex),
+					(t::ColType::ColDesc as u32, &data.name),
 				],
 			);
 
@@ -70,10 +72,10 @@ impl ColorStore {
 				model.set(
 					&iter,
 					&[
-						(0, &prop.id),
-						(1, &prop.name),
-						(2, &prop.hex),
-						(3, &prop.intro),
+						(t::ColType::ColID as u32, &prop.id),
+						(t::ColType::ColName as u32, &prop.name),
+						(t::ColType::ColHex as u32, &prop.hex),
+						(t::ColType::ColDesc as u32, &prop.intro),
 					],
 				);
 			});
