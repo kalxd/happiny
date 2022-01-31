@@ -1,8 +1,8 @@
 use gtk::prelude::*;
 use gtk::{AccelGroup, Application, ApplicationWindow, Box, Clipboard, Orientation};
 
-use crate::widget::color_view::ColorView;
-use crate::widget::search_bar::TopSearchBar;
+use crate::search_bar::TopSearchBar;
+use crate::table::ColorView;
 
 pub struct App {
 	window: ApplicationWindow,

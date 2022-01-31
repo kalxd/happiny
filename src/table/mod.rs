@@ -10,8 +10,11 @@ use std::ops::Deref;
 use std::rc::Rc;
 use std::str::FromStr;
 
-use super::tree_menu::TreeMenu;
-use crate::store::ColorStore;
+mod store;
+mod tree_menu;
+
+use store::ColorStore;
+use tree_menu::TreeMenu;
 
 fn selection_value(model: &TreeModel, iter: &TreeIter, column: i32) -> Option<String> {
 	let value = model.value(&iter, column);

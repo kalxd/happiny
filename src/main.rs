@@ -3,8 +3,8 @@ use gtk::prelude::*;
 use gtk::Application;
 
 mod app;
-mod store;
-mod widget;
+mod search_bar;
+mod table;
 
 use app::App;
 

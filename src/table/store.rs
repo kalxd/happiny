@@ -5,7 +5,7 @@ use serde::Deserialize;
 
 use std::ops::Deref;
 
-const JSON_DATA: &'static str = include_str!("../data/colors.json");
+const JSON_DATA: &'static str = include_str!("../../data/colors.json");
 
 /// 颜色属性
 #[derive(Deserialize)]
