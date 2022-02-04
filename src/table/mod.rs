@@ -1,4 +1,3 @@
-use css_color_parser2::Color;
 use gtk::prelude::*;
 use gtk::{
 	CellRendererText, Clipboard, ScrolledWindow, TreeIter, TreeModel, TreeModelFilter, TreeView,
@@ -8,7 +7,6 @@ use gtk::{
 use std::cell::RefCell;
 use std::ops::Deref;
 use std::rc::Rc;
-use std::str::FromStr;
 
 mod store;
 mod t;
@@ -115,13 +113,11 @@ impl ColorView {
 			// 右键菜单
 			self.view.connect_button_press_event(|view, event| {
 				if event.button() == 3 {
-					if let Some(color) = view
+					if let Some(menu) = view
 						.selection()
 						.selected()
-						.and_then(|(model, iter)| selection_value(&model, &iter, 2))
-						.and_then(|text| Color::from_str(&text).ok())
+						.and_then(|(model, iter)| TreeMenu::new(&model, &iter))
 					{
-						let menu = TreeMenu::new(color);
 						menu.connect_activate(|msg| {
 							let clipboard = Clipboard::get(&gtk::gdk::SELECTION_CLIPBOARD);
 							clipboard.set_text(&msg);
