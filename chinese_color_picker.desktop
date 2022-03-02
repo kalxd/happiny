@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type = Application
+Name = ChineseColorPicker
+Terminal = false
+Comment = 中国传统颜色拾取器
+Exec = Workspace/chinese_color_picker/target/release/chinese_color_picker
+Categories = Utility;
