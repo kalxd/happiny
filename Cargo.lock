@@ -78,16 +78,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "chinese_color_picker"
-version = "0.1.0"
-dependencies = [
- "css-color-parser2",
- "gtk",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "css-color-parser2"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -360,6 +350,16 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "happiny"
+version = "0.1.0"
+dependencies = [
+ "css-color-parser2",
+ "gtk",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
