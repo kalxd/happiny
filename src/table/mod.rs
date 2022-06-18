@@ -103,7 +103,12 @@ impl ColorView {
 					.borrow()
 					.as_ref()
 					.and_then(|keyword: &String| {
-						selection_value(&model, &iter, 1).map(|value| value.contains(keyword))
+						if model.iter_has_child(&iter) {
+							return None;
+						} else {
+							return selection_value(&model, &iter, 1)
+								.map(|value| value.contains(keyword));
+						}
 					})
 					.unwrap_or(true)
 			});
