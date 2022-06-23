@@ -1,5 +1,5 @@
 use gtk::prelude::*;
-use gtk::{glib, Application, ApplicationWindow};
+use gtk::{glib, Application, ApplicationWindow, Box as GtkBox, Orientation};
 
 mod action;
 mod headerbar;
@@ -22,9 +22,25 @@ impl MainWindow {
 			.default_width(800)
 			.build();
 
-		let header_tool_bar = headerbar::HeaderToolBar::new();
+		let main_layout = GtkBox::new(Orientation::Vertical, 0);
 
+		let header_tool_bar = headerbar::HeaderToolBar::new();
 		window.set_titlebar(Some(&header_tool_bar.header_bar));
+
+		let header_search_bar = headerbar::HeaderSearchBar::new();
+		header_tool_bar
+			.toggle_search_btn
+			.bind_property(
+				"active",
+				&header_search_bar.search_bar,
+				"search-mode-enabled",
+			)
+			.flags(glib::BindingFlags::BIDIRECTIONAL)
+			.build();
+
+		main_layout.pack_start(&header_search_bar.search_bar, false, false, 0);
+
+		window.add(&main_layout);
 
 		Self { window, receiver }
 	}
