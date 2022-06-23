@@ -2,6 +2,7 @@ use gtk::prelude::*;
 use gtk::{glib, Application, ApplicationWindow};
 
 mod action;
+mod headerbar;
 
 use self::action::Action;
 
@@ -20,6 +21,10 @@ impl MainWindow {
 			.default_height(800)
 			.default_width(800)
 			.build();
+
+		let header_tool_bar = headerbar::HeaderToolBar::new();
+
+		window.set_titlebar(Some(&header_tool_bar.header_bar));
 
 		Self { window, receiver }
 	}
