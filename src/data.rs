@@ -7,12 +7,6 @@ pub struct RGBColor {
 	pub blue: u8,
 }
 
-impl ToString for RGBColor {
-	fn to_string(&self) -> String {
-		format!("#{:02x}{:02x}{:02x}", self.red, self.green, self.blue)
-	}
-}
-
 impl<'a> TryFrom<&'a str> for RGBColor {
 	type Error = ParseIntError;
 
