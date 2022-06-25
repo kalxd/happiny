@@ -2,9 +2,9 @@ use serde::Deserialize;
 use std::num::ParseIntError;
 
 pub struct RGBColor {
-	red: u8,
-	green: u8,
-	blue: u8,
+	pub red: u8,
+	pub green: u8,
+	pub blue: u8,
 }
 
 impl ToString for RGBColor {

@@ -68,7 +68,8 @@ impl ColorStore {
 
 enum TableAction {
 	PopupMenu {
-		value: String,
+		color_name: String,
+		color_hex: String,
 		button: u32,
 		time: u32,
 	},
@@ -154,15 +155,21 @@ impl TableView {
 				view.selection()
 					.selected()
 					.and_then(|(model, iter)| {
-						model
+						let color = model
 							.value(&iter, ColPosition::Color as i32)
 							.get::<String>()
-							.ok()
+							.ok();
+						let name = model
+							.value(&iter, ColPosition::Name as i32)
+							.get::<String>()
+							.ok();
+						return name.zip(color);
 					})
-					.and_then(|hex| {
+					.and_then(|(name, hex)| {
 						sender
 							.send(TableAction::PopupMenu {
-								value: hex,
+								color_name: name,
+								color_hex: hex,
 								button: event.button(),
 								time: event.time(),
 							})
@@ -176,12 +183,14 @@ impl TableView {
 		receive.attach(None, |action| {
 			match action {
 				TableAction::PopupMenu {
-					value,
+					color_name,
+					color_hex,
 					button,
 					time,
 				} => {
-					colormenu::ColorMenu::new(value).map(|menu| {
+					colormenu::ColorMenu::new(color_name, color_hex).map(|menu| {
 						menu.menu.popup_easy(button, time);
+						menu.menu.show_all();
 					});
 				}
 			}
