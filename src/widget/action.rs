@@ -1,1 +1,3 @@
-pub enum Action {}
+pub enum AppAction {
+	StartSearch(String),
+}

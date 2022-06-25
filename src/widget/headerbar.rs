@@ -1,4 +1,6 @@
-use gtk::{prelude::*, Entry, HeaderBar, Image, SearchBar, ToggleButton};
+use gtk::{glib::Sender, prelude::*, HeaderBar, Image, SearchBar, SearchEntry, ToggleButton};
+
+use super::action::AppAction;
 
 pub struct HeaderToolBar {
 	pub header_bar: HeaderBar,
@@ -31,8 +33,13 @@ pub struct HeaderSearchBar {
 }
 
 impl HeaderSearchBar {
-	pub fn new() -> Self {
-		let entry = Entry::builder().placeholder_text("颜色").build();
+	pub fn new(sender: Sender<AppAction>) -> Self {
+		let entry = SearchEntry::builder().placeholder_text("颜色").build();
+
+		entry.connect_activate(move |entry| {
+			let text = entry.text().as_str().trim().to_string();
+			sender.send(AppAction::StartSearch(text)).unwrap();
+		});
 
 		let search_bar = SearchBar::builder().show_close_button(true).build();
 		search_bar.connect_entry(&entry);

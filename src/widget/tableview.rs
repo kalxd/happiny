@@ -1,4 +1,7 @@
-use gtk::{glib, prelude::*, TreeStore};
+use std::cell::RefCell;
+use std::rc::Rc;
+
+use gtk::{glib, prelude::*, TreeModelFilter, TreeStore};
 use gtk::{CellRendererText, ScrolledWindow, TreeView, TreeViewColumn, TreeViewGridLines};
 
 use crate::data::ColorNode;
@@ -26,10 +29,6 @@ struct ColorStore(TreeStore);
 impl ColorStore {
 	fn new() -> Self {
 		let model = TreeStore::new(COL_TYPE);
-
-		if let Err(x) = serde_json::from_str::<Vec<ColorNode>>(JSON_DATA) {
-			dbg!(x);
-		}
 
 		serde_json::from_str::<Vec<ColorNode>>(JSON_DATA)
 			.unwrap_or(vec![])
@@ -77,25 +76,28 @@ enum TableAction {
 
 pub struct TableView {
 	view: TreeView,
-	store: ColorStore,
+	filter_model: TreeModelFilter,
 	pub layout: ScrolledWindow,
+	search_keyword: Rc<RefCell<Option<String>>>,
 }
 
 impl TableView {
 	pub fn new() -> Self {
 		let store = ColorStore::new();
+		let filter_model = TreeModelFilter::new(&store.0, None);
 
 		let view = TreeView::builder()
 			.enable_grid_lines(TreeViewGridLines::Horizontal)
 			.enable_search(false)
-			.model(&store.0)
+			.model(&filter_model)
 			.build();
 		let layout = ScrolledWindow::builder().child(&view).build();
 
 		let table = Self {
 			view,
-			store,
 			layout,
+			filter_model,
+			search_keyword: Default::default(),
 		};
 
 		table.setup_columns();
@@ -180,6 +182,25 @@ impl TableView {
 			gtk::Inhibit(false)
 		});
 
+		let keyword = self.search_keyword.clone();
+		self.filter_model.set_visible_func(move |model, iter| {
+			keyword
+				.borrow()
+				.as_ref()
+				.and_then(|keyword| {
+					if model.iter_has_child(&iter) {
+						return None;
+					}
+
+					model
+						.value(&iter, ColPosition::Name as i32)
+						.get::<String>()
+						.ok()
+						.map(|name| name.contains(keyword))
+				})
+				.unwrap_or(true)
+		});
+
 		receive.attach(None, |action| {
 			match action {
 				TableAction::PopupMenu {
@@ -196,5 +217,16 @@ impl TableView {
 			}
 			gtk::glib::Continue(true)
 		});
+	}
+
+	pub fn filter(&self, keyword: String) {
+		if keyword.is_empty() {
+			self.search_keyword.replace(None);
+		} else {
+			self.search_keyword.replace(Some(keyword));
+		}
+
+		self.filter_model.refilter();
+		self.view.expand_all();
 	}
 }
