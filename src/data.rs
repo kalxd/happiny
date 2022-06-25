@@ -7,6 +7,12 @@ pub struct RGBColor {
 	blue: u8,
 }
 
+impl ToString for RGBColor {
+	fn to_string(&self) -> String {
+		format!("#{:02x}{:02x}{:02x}", self.red, self.green, self.blue)
+	}
+}
+
 impl<'a> TryFrom<&'a str> for RGBColor {
 	type Error = ParseIntError;
 
@@ -38,6 +44,7 @@ impl<'de> Deserialize<'de> for RGBColor {
 #[derive(Deserialize)]
 pub struct ColorProp {
 	pub id: String,
+	#[serde(rename = "hex")]
 	pub color: RGBColor,
 	pub name: String,
 	pub intro: String,
@@ -48,6 +55,7 @@ pub struct ColorProp {
 pub struct ColorNode {
 	pub id: u8,
 	pub name: String,
+	#[serde(rename = "hex")]
 	pub color: RGBColor,
 	pub colors: Vec<ColorProp>,
 }

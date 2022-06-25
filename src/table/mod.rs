@@ -41,13 +41,7 @@ impl ColorView {
 			.build();
 		let scroll_window = ScrolledWindow::builder().child(&view).build();
 
-		{
-			let text = CellRendererText::new();
-			let col = TreeViewColumn::builder().title("序号").build();
-			col.pack_start(&text, false);
-			col.add_attribute(&text, "text", t::ColType::ColID as i32);
-			view.append_column(&col);
-		}
+		{}
 
 		{
 			let text = CellRendererText::new();

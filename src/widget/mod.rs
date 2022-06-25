@@ -3,6 +3,7 @@ use gtk::{glib, Application, ApplicationWindow, Box as GtkBox, Orientation};
 
 mod action;
 mod headerbar;
+mod tableview;
 
 use self::action::Action;
 
@@ -38,6 +39,9 @@ impl MainWindow {
 			.flags(glib::BindingFlags::BIDIRECTIONAL)
 			.build();
 		main_layout.pack_start(&header_search_bar.search_bar, false, false, 0);
+
+		let table_view = tableview::TableView::new();
+		main_layout.pack_start(&table_view.layout, true, true, 0);
 
 		window.add(&main_layout);
 
