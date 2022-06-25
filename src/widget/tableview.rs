@@ -3,6 +3,8 @@ use gtk::{CellRendererText, ScrolledWindow, TreeView, TreeViewColumn, TreeViewGr
 
 use crate::data::ColorNode;
 
+use super::colormenu;
+
 const JSON_DATA: &'static str = include_str!("../../data/colors.json");
 
 const COL_TYPE: &'static [glib::types::Type; 4] = &[
@@ -65,7 +67,11 @@ impl ColorStore {
 }
 
 enum TableAction {
-	PopupMenu(String),
+	PopupMenu {
+		value: String,
+		button: u32,
+		time: u32,
+	},
 }
 
 pub struct TableView {
@@ -145,22 +151,38 @@ impl TableView {
 
 		self.view.connect_button_release_event(move |view, event| {
 			if event.button() == 3 {
-				if let Some(hex) = view.selection().selected().and_then(|(model, iter)| {
-					model
-						.value(&iter, ColPosition::Color as i32)
-						.get::<String>()
-						.ok()
-				}) {
-					sender.send(TableAction::PopupMenu(hex)).unwrap();
-				}
+				view.selection()
+					.selected()
+					.and_then(|(model, iter)| {
+						model
+							.value(&iter, ColPosition::Color as i32)
+							.get::<String>()
+							.ok()
+					})
+					.and_then(|hex| {
+						sender
+							.send(TableAction::PopupMenu {
+								value: hex,
+								button: event.button(),
+								time: event.time(),
+							})
+							.ok()
+					});
 			}
+
 			gtk::Inhibit(false)
 		});
 
 		receive.attach(None, |action| {
 			match action {
-				TableAction::PopupMenu(msg) => {
-					dbg!(&msg);
+				TableAction::PopupMenu {
+					value,
+					button,
+					time,
+				} => {
+					colormenu::ColorMenu::new(value).map(|menu| {
+						menu.menu.popup_easy(button, time);
+					});
 				}
 			}
 			gtk::glib::Continue(true)

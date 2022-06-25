@@ -2,6 +2,7 @@ use gtk::prelude::*;
 use gtk::{glib, Application, ApplicationWindow, Box as GtkBox, Orientation};
 
 mod action;
+mod colormenu;
 mod headerbar;
 mod tableview;
 
