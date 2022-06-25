@@ -30,22 +30,11 @@ impl<'a> TryFrom<&'a str> for RGBColor {
 	}
 }
 
-impl<'de> Deserialize<'de> for RGBColor {
-	fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-	where
-		D: serde::Deserializer<'de>,
-	{
-		let s: String = String::deserialize(deserializer)?;
-		Self::try_from(s.as_str()).map_err(|e| SerError::custom(format!("RGBColor invalid {}", e)))
-	}
-}
-
 /// 颜色属性
 #[derive(Deserialize)]
 pub struct ColorProp {
 	pub id: String,
-	#[serde(rename = "hex")]
-	pub color: RGBColor,
+	pub hex: String,
 	pub name: String,
 	pub intro: String,
 }
@@ -55,7 +44,6 @@ pub struct ColorProp {
 pub struct ColorNode {
 	pub id: u8,
 	pub name: String,
-	#[serde(rename = "hex")]
-	pub color: RGBColor,
+	pub hex: String,
 	pub colors: Vec<ColorProp>,
 }

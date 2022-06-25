@@ -41,10 +41,23 @@ impl ColorStore {
 					&[
 						(ColPosition::ID as u32, &data.id),
 						(ColPosition::Name as u32, &data.name),
-						(ColPosition::Color as u32, &data.color.to_string()),
+						(ColPosition::Color as u32, &data.hex),
 						(ColPosition::Intro as u32, &data.name),
 					],
 				);
+
+				data.colors.iter().for_each(|prop| {
+					let iter = model.append(Some(&iter));
+					model.set(
+						&iter,
+						&[
+							(ColPosition::ID as u32, &prop.id),
+							(ColPosition::Name as u32, &prop.name),
+							(ColPosition::Color as u32, &prop.hex),
+							(ColPosition::Intro as u32, &prop.intro),
+						],
+					);
+				});
 			});
 
 		return Self(model);
