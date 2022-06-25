@@ -14,6 +14,7 @@ impl HeaderToolBar {
 
 		let toggle_search_btn = ToggleButton::builder()
 			.image(&Image::from_icon_name(Some("find"), gtk::IconSize::Button))
+			.tooltip_text("搜索颜色")
 			.build();
 
 		header_bar.pack_start(&toggle_search_btn);
@@ -31,7 +32,7 @@ pub struct HeaderSearchBar {
 
 impl HeaderSearchBar {
 	pub fn new() -> Self {
-		let entry = Entry::new();
+		let entry = Entry::builder().placeholder_text("颜色").build();
 
 		let search_bar = SearchBar::builder().show_close_button(true).build();
 		search_bar.connect_entry(&entry);

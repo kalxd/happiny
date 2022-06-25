@@ -37,7 +37,6 @@ impl MainWindow {
 			)
 			.flags(glib::BindingFlags::BIDIRECTIONAL)
 			.build();
-
 		main_layout.pack_start(&header_search_bar.search_bar, false, false, 0);
 
 		window.add(&main_layout);

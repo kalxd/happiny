@@ -9,6 +9,7 @@ mod table;
 
 // use app::App;
 
+mod data;
 mod widget;
 
 fn main() {
