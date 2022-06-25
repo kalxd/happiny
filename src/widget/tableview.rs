@@ -64,6 +64,10 @@ impl ColorStore {
 	}
 }
 
+enum TableAction {
+	PopupMenu(String),
+}
+
 pub struct TableView {
 	view: TreeView,
 	store: ColorStore,
@@ -88,6 +92,7 @@ impl TableView {
 		};
 
 		table.setup_columns();
+		table.connect_signals();
 
 		return table;
 	}
@@ -132,5 +137,33 @@ impl TableView {
 			col.add_attribute(&text, "text", ColPosition::Intro as i32);
 			self.view.append_column(&col);
 		}
+	}
+
+	fn connect_signals(&self) {
+		let (sender, receive) =
+			gtk::glib::MainContext::channel::<TableAction>(gtk::glib::PRIORITY_DEFAULT);
+
+		self.view.connect_button_release_event(move |view, event| {
+			if event.button() == 3 {
+				if let Some(hex) = view.selection().selected().and_then(|(model, iter)| {
+					model
+						.value(&iter, ColPosition::Color as i32)
+						.get::<String>()
+						.ok()
+				}) {
+					sender.send(TableAction::PopupMenu(hex)).unwrap();
+				}
+			}
+			gtk::Inhibit(false)
+		});
+
+		receive.attach(None, |action| {
+			match action {
+				TableAction::PopupMenu(msg) => {
+					dbg!(&msg);
+				}
+			}
+			gtk::glib::Continue(true)
+		});
 	}
 }

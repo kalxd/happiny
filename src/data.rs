@@ -1,4 +1,4 @@
-use serde::{de::Error as SerError, Deserialize};
+use serde::Deserialize;
 use std::num::ParseIntError;
 
 pub struct RGBColor {
