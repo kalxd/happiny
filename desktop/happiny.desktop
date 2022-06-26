@@ -3,5 +3,6 @@ Type = Application
 Name = 中国传统颜色拾取器
 Terminal = false
 Comment = 中国传统颜色拾取器
+Icon = happiny
 Exec = .cargo/bin/happiny
 Categories = Utility;
