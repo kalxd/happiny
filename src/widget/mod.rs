@@ -22,6 +22,7 @@ impl MainWindow {
 		let window = ApplicationWindow::builder()
 			.application(app)
 			.title("中国传统颜色搭取器")
+			.icon_name("happiny")
 			.default_height(800)
 			.default_width(800)
 			.build();
