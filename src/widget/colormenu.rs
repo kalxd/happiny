@@ -35,10 +35,11 @@ impl ColorMenu {
 		}
 
 		{
-			let item = MenuItem::with_mnemonic(&format!("复制“{}”", &hex));
+			let raw_hex: String = hex.trim_start_matches("#").into();
+			let item = MenuItem::with_mnemonic(&format!("复制“{}”", &raw_hex));
 			menu.append(&item);
 			item.connect_activate(move |_| {
-				copy_text_to_clipboard(&hex);
+				copy_text_to_clipboard(&raw_hex);
 			});
 		}
 
