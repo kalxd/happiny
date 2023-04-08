@@ -4,7 +4,7 @@ version = "0.2.2"
 edition = "2021"
 
 [dependencies]
-gtk = "0.15.1"
+gtk = "0.17.1"
 serde_json = "1.0.72"
 
 [dependencies.serde]

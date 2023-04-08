@@ -1,8 +1,17 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use gtk::{glib, prelude::*, TreeModelFilter, TreeStore};
-use gtk::{CellRendererText, ScrolledWindow, TreeView, TreeViewColumn, TreeViewGridLines};
+use gtk::{
+	glib,
+	prelude::{
+		GtkMenuExtManual, TreeModelExt, TreeModelFilterExt, TreeSelectionExt, TreeStoreExt,
+		TreeStoreExtManual, TreeViewColumnExt, TreeViewExt, WidgetExt,
+	},
+};
+use gtk::{
+	CellRendererText, ScrolledWindow, TreeModelFilter, TreeStore, TreeView, TreeViewColumn,
+	TreeViewGridLines,
+};
 
 use crate::data::ColorNode;
 
