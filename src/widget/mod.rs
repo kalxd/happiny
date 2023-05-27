@@ -4,6 +4,7 @@ use gtk::{glib, Application, ApplicationWindow, Box as GtkBox, Orientation};
 use crate::data::ColorData;
 
 mod action;
+mod colormenu;
 mod headerbar;
 mod tableview;
 

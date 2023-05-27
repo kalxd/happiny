@@ -4,8 +4,8 @@ use std::rc::Rc;
 use gtk::{
 	glib,
 	prelude::{
-		GtkMenuExtManual, TreeModelExt, TreeModelFilterExt, TreeSelectionExt, TreeStoreExt,
-		TreeStoreExtManual, TreeViewColumnExt, TreeViewExt, WidgetExt,
+		GtkMenuExtManual, ObjectExt, TreeModelExt, TreeModelFilterExt, TreeSelectionExt,
+		TreeStoreExt, TreeStoreExtManual, TreeViewColumnExt, TreeViewExt, WidgetExt,
 	},
 };
 use gtk::{
@@ -15,7 +15,7 @@ use gtk::{
 
 use crate::data::ColorData;
 
-// use super::colormenu;
+use super::colormenu;
 
 const COL_TYPE: &[glib::types::Type; 7] = &[
 	glib::types::Type::U32,
@@ -181,11 +181,27 @@ impl TableView {
 				.unwrap_or(true)
 		});
 
-		/*
 		self.view.connect_button_release_event(move |view, event| {
 			if event.button() == 3 {
-				view.selection()
-					.selected()
+				if let Some((model, iter)) = view.selection().selected() {
+					let name = model.value(&iter, ColPosition::Name as i32);
+					let name = name.get().expect("name is empty");
+
+					let rgb = model.value(&iter, ColPosition::Rgb as i32);
+					let rgb = rgb.get().expect("rgb is empty");
+
+					let hex = model.value(&iter, ColPosition::Hex as i32);
+					let hex = hex.get().expect("hex is empty");
+
+					let cmyk = model.value(&iter, ColPosition::Cmyk as i32);
+					let cmyk = cmyk.get().expect("cmyk is empty");
+
+					let menu = colormenu::ColorMenu::new(&[name, hex, rgb, cmyk]);
+					menu.menu.popup_easy(event.button(), event.time());
+					menu.menu.show_all();
+				}
+			}
+			/*
 					.and_then(|(model, iter)| {
 						let color = model
 							.value(&iter, ColPosition::Color as i32)
@@ -208,10 +224,12 @@ impl TableView {
 							.ok()
 					});
 			}
+				 */
 
 			gtk::Inhibit(false)
 		});
 
+		/*
 		receive.attach(None, |action| {
 			match action {
 				TableAction::PopupMenu {
