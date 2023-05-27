@@ -166,6 +166,21 @@ impl TableView {
 		let (sender, receive) =
 			gtk::glib::MainContext::channel::<TableAction>(gtk::glib::PRIORITY_DEFAULT);
 
+		let keyword = self.search_keyword.clone();
+		self.filter_model.set_visible_func(move |model, iter| {
+			keyword
+				.borrow()
+				.as_ref()
+				.and_then(|keyword| {
+					model
+						.value(&iter, ColPosition::Name as i32)
+						.get::<String>()
+						.ok()
+						.map(|name| name.contains(keyword))
+				})
+				.unwrap_or(true)
+		});
+
 		/*
 		self.view.connect_button_release_event(move |view, event| {
 			if event.button() == 3 {
@@ -195,25 +210,6 @@ impl TableView {
 			}
 
 			gtk::Inhibit(false)
-		});
-
-		let keyword = self.search_keyword.clone();
-		self.filter_model.set_visible_func(move |model, iter| {
-			keyword
-				.borrow()
-				.as_ref()
-				.and_then(|keyword| {
-					if model.iter_has_child(&iter) {
-						return None;
-					}
-
-					model
-						.value(&iter, ColPosition::Name as i32)
-						.get::<String>()
-						.ok()
-						.map(|name| name.contains(keyword))
-				})
-				.unwrap_or(true)
 		});
 
 		receive.attach(None, |action| {

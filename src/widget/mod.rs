@@ -9,6 +9,7 @@ mod tableview;
 
 pub struct MainWindow {
 	window: ApplicationWindow,
+	table_view: tableview::TableView,
 	receiver: glib::Receiver<action::AppAction>,
 }
 
@@ -46,12 +47,25 @@ impl MainWindow {
 
 		window.add(&main_layout);
 
-		Self { window, receiver }
+		Self {
+			window,
+			table_view,
+			receiver,
+		}
 	}
 
 	pub fn run(app: &Application, colors: &[ColorData]) {
 		let app = Self::new(app, colors);
 		app.window.show_all();
+
+		app.receiver.attach(None, move |action| {
+			match action {
+				action::AppAction::StartSearch(key) => {
+					app.table_view.filter(key);
+				}
+			}
+			glib::Continue(true)
+		});
 	}
 }
 
