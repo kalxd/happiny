@@ -41,10 +41,3 @@ pub struct ColorData {
 	#[serde(rename = "CMYK")]
 	pub cmyk: CMYK,
 }
-
-pub struct RightMenuData<'a> {
-	pub name: &'a str,
-	pub rgb: &'a str,
-	pub cmyk: &'a str,
-	pub hex: &'a str,
-}

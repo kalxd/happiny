@@ -2,7 +2,8 @@
 
 ![小福蛋](https://media.52poke.com/wiki/thumb/archive/2/27/20140413171138%21440Happiny.png/79px-440Happiny.png)
 
-[中国传统颜色手册](https://colors.ichuantong.cn/)是非常不错的在线颜色拾取网站，但它没有直观的颜色列表，颜色对比较为吃力。之后参考它的[源码](https://github.com/zerosoul/chinese-colors)，找到所有[颜色列表](./data/colors.json)，做成这个调色板拾色器。
+[中国传统色](http://zhongguose.com/)收录了526种颜色，其中仅两种颜色色值相同。
+该网站对比颜色比较困难，找到它的接口数据后，就做了这个色卡拾色器，方便日后取色。
 
 # 源码安装
 

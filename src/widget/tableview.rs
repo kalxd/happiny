@@ -4,8 +4,8 @@ use std::rc::Rc;
 use gtk::{
 	glib,
 	prelude::{
-		GtkMenuExtManual, ObjectExt, TreeModelExt, TreeModelFilterExt, TreeSelectionExt,
-		TreeStoreExt, TreeStoreExtManual, TreeViewColumnExt, TreeViewExt, WidgetExt,
+		GtkMenuExtManual, TreeModelExt, TreeModelFilterExt, TreeSelectionExt, TreeStoreExt,
+		TreeStoreExtManual, TreeViewColumnExt, TreeViewExt, WidgetExt,
 	},
 };
 use gtk::{
@@ -61,15 +61,6 @@ impl ColorStore {
 
 		return Self(model);
 	}
-}
-
-enum TableAction {
-	PopupMenu {
-		color_name: String,
-		color_hex: String,
-		button: u32,
-		time: u32,
-	},
 }
 
 pub struct TableView {
@@ -163,9 +154,6 @@ impl TableView {
 	}
 
 	fn connect_signals(&self) {
-		let (sender, receive) =
-			gtk::glib::MainContext::channel::<TableAction>(gtk::glib::PRIORITY_DEFAULT);
-
 		let keyword = self.search_keyword.clone();
 		self.filter_model.set_visible_func(move |model, iter| {
 			keyword
@@ -201,52 +189,9 @@ impl TableView {
 					menu.menu.show_all();
 				}
 			}
-			/*
-					.and_then(|(model, iter)| {
-						let color = model
-							.value(&iter, ColPosition::Color as i32)
-							.get::<String>()
-							.ok();
-						let name = model
-							.value(&iter, ColPosition::Name as i32)
-							.get::<String>()
-							.ok();
-						return name.zip(color);
-					})
-					.and_then(|(name, hex)| {
-						sender
-							.send(TableAction::PopupMenu {
-								color_name: name,
-								color_hex: hex,
-								button: event.button(),
-								time: event.time(),
-							})
-							.ok()
-					});
-			}
-				 */
 
 			gtk::Inhibit(false)
 		});
-
-		/*
-		receive.attach(None, |action| {
-			match action {
-				TableAction::PopupMenu {
-					color_name,
-					color_hex,
-					button,
-					time,
-				} => {
-					colormenu::ColorMenu::new(color_name, color_hex).map(|menu| {
-						menu.menu.popup_easy(button, time);
-						menu.menu.show_all();
-					});
-				}
-			}
-			gtk::glib::Continue(true)
-		});
-		 */
 	}
 
 	pub fn filter(&self, keyword: String) {
