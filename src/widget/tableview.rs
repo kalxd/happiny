@@ -13,13 +13,14 @@ use gtk::{
 	TreeViewGridLines,
 };
 
-use crate::data::ColorNode;
+use crate::data::ColorData;
 
-use super::colormenu;
+// use super::colormenu;
 
-const JSON_DATA: &'static str = include_str!("../../data/colors.json");
-
-const COL_TYPE: &'static [glib::types::Type; 4] = &[
+const COL_TYPE: &[glib::types::Type; 7] = &[
+	glib::types::Type::U32,
+	glib::types::Type::STRING,
+	glib::types::Type::STRING,
 	glib::types::Type::STRING,
 	glib::types::Type::STRING,
 	glib::types::Type::STRING,
@@ -29,46 +30,34 @@ const COL_TYPE: &'static [glib::types::Type; 4] = &[
 enum ColPosition {
 	ID = 0,
 	Name,
-	Color,
-	Intro,
+	Pinyin,
+	RgbBackground,
+	Rgb,
+	Cmyk,
+	Hex,
 }
 
 struct ColorStore(TreeStore);
 
 impl ColorStore {
-	fn new() -> Self {
+	fn new(colors: &[ColorData]) -> Self {
 		let model = TreeStore::new(COL_TYPE);
 
-		serde_json::from_str::<Vec<ColorNode>>(JSON_DATA)
-			.unwrap_or(vec![])
-			.iter()
-			.for_each(|data| {
-				let iter = model.append(None);
-
-				// 父结点
-				model.set(
-					&iter,
-					&[
-						(ColPosition::ID as u32, &data.id),
-						(ColPosition::Name as u32, &data.name),
-						(ColPosition::Color as u32, &data.hex),
-						(ColPosition::Intro as u32, &data.name),
-					],
-				);
-
-				data.colors.iter().for_each(|prop| {
-					let iter = model.append(Some(&iter));
-					model.set(
-						&iter,
-						&[
-							(ColPosition::ID as u32, &prop.id),
-							(ColPosition::Name as u32, &prop.name),
-							(ColPosition::Color as u32, &prop.hex),
-							(ColPosition::Intro as u32, &prop.intro),
-						],
-					);
-				});
-			});
+		for color in colors {
+			let iter = model.append(None);
+			model.set(
+				&iter,
+				&[
+					(ColPosition::ID as u32, &color.id),
+					(ColPosition::Name as u32, &color.name),
+					(ColPosition::Pinyin as u32, &color.pinyin),
+					(ColPosition::RgbBackground as u32, &color.rgb),
+					(ColPosition::Rgb as u32, &color.rgb),
+					(ColPosition::Cmyk as u32, &color.cmyk),
+					(ColPosition::Hex as u32, &color.hex),
+				],
+			);
+		}
 
 		return Self(model);
 	}
@@ -91,8 +80,8 @@ pub struct TableView {
 }
 
 impl TableView {
-	pub fn new() -> Self {
-		let store = ColorStore::new();
+	pub fn new(colors: &[ColorData]) -> Self {
+		let store = ColorStore::new(colors);
 		let filter_model = TreeModelFilter::new(&store.0, None);
 
 		let view = TreeView::builder()
@@ -118,7 +107,7 @@ impl TableView {
 	fn setup_columns(&self) {
 		{
 			let text = CellRendererText::new();
-			let col = TreeViewColumn::builder().title("序号").build();
+			let col = TreeViewColumn::builder().title("编号").build();
 			col.pack_start(&text, false);
 			col.add_attribute(&text, "text", ColPosition::ID as i32);
 			self.view.append_column(&col);
@@ -134,25 +123,41 @@ impl TableView {
 
 		{
 			let text = CellRendererText::new();
-			let col = TreeViewColumn::builder().title("色值").build();
+			let col = TreeViewColumn::builder().title("拼音").build();
 			col.pack_start(&text, false);
-			col.add_attribute(&text, "text", ColPosition::Color as i32);
+			col.add_attribute(&text, "text", ColPosition::Pinyin as i32);
 			self.view.append_column(&col);
 		}
 
 		{
 			let text = CellRendererText::new();
-			let col = TreeViewColumn::builder().title("明亮亮的颜色").build();
+			let col = TreeViewColumn::builder().title("色卡").build();
 			col.pack_start(&text, false);
-			col.add_attribute(&text, "background", ColPosition::Color as i32);
+			col.add_attribute(&text, "background", ColPosition::RgbBackground as i32);
 			self.view.append_column(&col);
 		}
 
 		{
 			let text = CellRendererText::new();
-			let col = TreeViewColumn::builder().title("详情说明").build();
+			let col = TreeViewColumn::builder().title("RGB").build();
+			col.pack_start(&text, false);
+			col.add_attribute(&text, "text", ColPosition::Rgb as i32);
+			self.view.append_column(&col);
+		}
+
+		{
+			let text = CellRendererText::new();
+			let col = TreeViewColumn::builder().title("CMYK").build();
+			col.pack_start(&text, false);
+			col.add_attribute(&text, "text", ColPosition::Cmyk as i32);
+			self.view.append_column(&col);
+		}
+
+		{
+			let text = CellRendererText::new();
+			let col = TreeViewColumn::builder().title("HEX值").build();
 			col.pack_start(&text, true);
-			col.add_attribute(&text, "text", ColPosition::Intro as i32);
+			col.add_attribute(&text, "text", ColPosition::Hex as i32);
 			self.view.append_column(&col);
 		}
 	}
@@ -161,6 +166,7 @@ impl TableView {
 		let (sender, receive) =
 			gtk::glib::MainContext::channel::<TableAction>(gtk::glib::PRIORITY_DEFAULT);
 
+		/*
 		self.view.connect_button_release_event(move |view, event| {
 			if event.button() == 3 {
 				view.selection()
@@ -226,6 +232,7 @@ impl TableView {
 			}
 			gtk::glib::Continue(true)
 		});
+		 */
 	}
 
 	pub fn filter(&self, keyword: String) {

@@ -5,6 +5,7 @@ use crate::data::ColorData;
 
 mod action;
 mod headerbar;
+mod tableview;
 
 pub struct MainWindow {
 	window: ApplicationWindow,
@@ -39,6 +40,9 @@ impl MainWindow {
 			.flags(glib::BindingFlags::BIDIRECTIONAL)
 			.build();
 		main_layout.pack_start(&header_search_bar.search_bar, false, false, 0);
+
+		let table_view = tableview::TableView::new(colors);
+		main_layout.pack_start(&table_view.layout, true, true, 0);
 
 		window.add(&main_layout);
 
