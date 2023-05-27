@@ -1,14 +1,20 @@
-use gtk::prelude::WidgetExt;
-use gtk::{Application, ApplicationWindow};
+use gtk::prelude::{BoxExt, ContainerExt, GtkWindowExt, ObjectExt, WidgetExt};
+use gtk::{glib, Application, ApplicationWindow, Box as GtkBox, Orientation};
 
 use crate::data::ColorData;
 
+mod action;
+mod headerbar;
+
 pub struct MainWindow {
 	window: ApplicationWindow,
+	receiver: glib::Receiver<action::AppAction>,
 }
 
 impl MainWindow {
 	fn new(app: &Application, colors: &[ColorData]) -> Self {
+		let (sender, receiver) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+
 		let window = ApplicationWindow::builder()
 			.application(app)
 			.title("中国传统色卡")
@@ -17,7 +23,26 @@ impl MainWindow {
 			.default_width(800)
 			.build();
 
-		Self { window }
+		let main_layout = GtkBox::new(Orientation::Vertical, 0);
+
+		let header_tool_bar = headerbar::HeaderToolBar::new();
+		window.set_titlebar(Some(&header_tool_bar.header_bar));
+
+		let header_search_bar = headerbar::HeaderSearchBar::new(sender);
+		header_tool_bar
+			.toggle_search_btn
+			.bind_property(
+				"active",
+				&header_search_bar.search_bar,
+				"search-mode-enabled",
+			)
+			.flags(glib::BindingFlags::BIDIRECTIONAL)
+			.build();
+		main_layout.pack_start(&header_search_bar.search_bar, false, false, 0);
+
+		window.add(&main_layout);
+
+		Self { window, receiver }
 	}
 
 	pub fn run(app: &Application, colors: &[ColorData]) {
