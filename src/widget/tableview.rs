@@ -131,7 +131,7 @@ impl TableView {
 
 		{
 			let text = CellRendererText::new();
-			let col = TreeViewColumn::builder().title("色卡").build();
+			let col = TreeViewColumn::builder().title("明亮亮的颜色").build();
 			col.pack_start(&text, false);
 			col.add_attribute(&text, "background", ColPosition::RgbBackground as i32);
 			self.view.append_column(&col);

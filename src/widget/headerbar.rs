@@ -11,7 +11,7 @@ impl HeaderToolBar {
 	pub fn new() -> Self {
 		let header_bar = HeaderBar::builder()
 			.show_close_button(true)
-			.title("中国传统颜色搭取器")
+			.title("中国传统色卡")
 			.build();
 
 		let toggle_search_btn = ToggleButton::builder()
