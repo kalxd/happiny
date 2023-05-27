@@ -1,6 +1,32 @@
-use gtk::prelude::*;
-use gtk::{glib, Application, ApplicationWindow, Box as GtkBox, Orientation};
+use gtk::prelude::WidgetExt;
+use gtk::{Application, ApplicationWindow};
 
+use crate::data::ColorData;
+
+pub struct MainWindow {
+	window: ApplicationWindow,
+}
+
+impl MainWindow {
+	fn new(app: &Application, colors: &[ColorData]) -> Self {
+		let window = ApplicationWindow::builder()
+			.application(app)
+			.title("中国传统色卡")
+			.icon_name("happiny")
+			.default_height(800)
+			.default_width(800)
+			.build();
+
+		Self { window }
+	}
+
+	pub fn run(app: &Application, colors: &[ColorData]) {
+		let app = Self::new(app, colors);
+		app.window.show_all();
+	}
+}
+
+/*
 mod action;
 mod colormenu;
 mod headerbar;
@@ -70,3 +96,4 @@ impl MainWindow {
 		});
 	}
 }
+*/

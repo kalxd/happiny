@@ -1,43 +1,22 @@
 use serde::Deserialize;
-use std::num::ParseIntError;
 
-pub struct RGBColor {
-	pub red: u8,
-	pub green: u8,
-	pub blue: u8,
-}
+#[derive(Deserialize, Debug, Clone)]
+pub struct RGB(u8, u8, u8);
 
-impl<'a> TryFrom<&'a str> for RGBColor {
-	type Error = ParseIntError;
+#[derive(Deserialize, Debug, Clone)]
+pub struct CMKY(u8, u8, u8, u8);
 
-	fn try_from(value: &'a str) -> Result<Self, Self::Error> {
-		let s = value.trim_start_matches("#");
-
-		let (redvalue, xs) = s.split_at(2);
-		let (greenvalue, xs) = xs.split_at(2);
-		let (bluevalue, _) = xs.split_at(2);
-
-		let red = u8::from_str_radix(redvalue, 16)?;
-		let green = u8::from_str_radix(greenvalue, 16)?;
-		let blue = u8::from_str_radix(bluevalue, 16)?;
-		Ok(Self { red, green, blue })
-	}
-}
-
-/// 颜色属性
-#[derive(Deserialize)]
-pub struct ColorProp {
-	pub id: String,
-	pub hex: String,
-	pub name: String,
-	pub intro: String,
-}
-
-/// 颜色结点
-#[derive(Deserialize)]
-pub struct ColorNode {
-	pub id: u8,
-	pub name: String,
-	pub hex: String,
-	pub colors: Vec<ColorProp>,
+#[derive(Deserialize, Debug, Clone)]
+pub struct ColorData {
+	id: usize,
+	#[serde(rename = "名称")]
+	name: String,
+	#[serde(rename = "拼音")]
+	pinyin: String,
+	#[serde(rename = "HEX")]
+	hex: String,
+	#[serde(rename = "RGB")]
+	rgb: RGB,
+	#[serde(rename = "CMYK")]
+	cmyk: CMKY,
 }
