@@ -190,7 +190,7 @@ impl TableView {
 				}
 			}
 
-			gtk::Inhibit(false)
+			glib::Propagation::Proceed
 		});
 	}
 
