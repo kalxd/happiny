@@ -1,4 +1,5 @@
-use gtk::{glib::Sender, prelude::*, HeaderBar, Image, SearchBar, SearchEntry, ToggleButton};
+use async_channel::Sender;
+use gtk::{prelude::*, HeaderBar, Image, SearchBar, SearchEntry, ToggleButton};
 
 use super::action::AppAction;
 
@@ -38,7 +39,7 @@ impl HeaderSearchBar {
 
 		entry.connect_activate(move |entry| {
 			let text = entry.text().as_str().trim().to_string();
-			sender.send(AppAction::StartSearch(text)).unwrap();
+			sender.try_send(AppAction::StartSearch(text)).unwrap();
 		});
 
 		let search_bar = SearchBar::builder().show_close_button(true).build();

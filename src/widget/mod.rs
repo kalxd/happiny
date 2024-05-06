@@ -1,3 +1,4 @@
+use async_channel::{Receiver, Sender};
 use gtk::prelude::{BoxExt, ContainerExt, GtkWindowExt, ObjectExt, WidgetExt};
 use gtk::{glib, Application, ApplicationWindow, Box as GtkBox, Orientation};
 
@@ -11,12 +12,14 @@ mod tableview;
 pub struct MainWindow {
 	window: ApplicationWindow,
 	table_view: tableview::TableView,
-	receiver: glib::Receiver<action::AppAction>,
+	receiver: Receiver<action::AppAction>,
+	_sender: Sender<action::AppAction>,
 }
 
 impl MainWindow {
 	fn new(app: &Application, colors: &[ColorData]) -> Self {
-		let (sender, receiver) = glib::MainContext::channel(glib::source::Priority::DEFAULT);
+		// let (sender, receiver) = glib::MainContext::channel(glib::source::Priority::DEFAULT);
+		let (sender, receiver) = async_channel::bounded(10);
 
 		let window = ApplicationWindow::builder()
 			.application(app)
@@ -31,7 +34,7 @@ impl MainWindow {
 		let header_tool_bar = headerbar::HeaderToolBar::new();
 		window.set_titlebar(Some(&header_tool_bar.header_bar));
 
-		let header_search_bar = headerbar::HeaderSearchBar::new(sender);
+		let header_search_bar = headerbar::HeaderSearchBar::new(sender.clone());
 		header_tool_bar
 			.toggle_search_btn
 			.bind_property(
@@ -52,6 +55,7 @@ impl MainWindow {
 			window,
 			table_view,
 			receiver,
+			_sender: sender,
 		}
 	}
 
@@ -59,13 +63,25 @@ impl MainWindow {
 		let app = Self::new(app, colors);
 		app.window.show_all();
 
-		app.receiver.attach(None, move |action| {
-			match action {
-				action::AppAction::StartSearch(key) => {
-					app.table_view.filter(key);
+		glib::MainContext::default().spawn_local(async move {
+			while let Ok(msg) = app.receiver.recv().await {
+				match msg {
+					action::AppAction::StartSearch(key) => {
+						app.table_view.filter(key);
+					}
 				}
 			}
-			glib::ControlFlow::Continue
 		});
+
+		/*
+			app.receiver.attach(None, move |action| {
+				match action {
+					action::AppAction::StartSearch(key) => {
+						app.table_view.filter(key);
+					}
+				}
+				glib::ControlFlow::Continue
+		});
+			*/
 	}
 }
