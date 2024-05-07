@@ -41,3 +41,10 @@ pub struct ColorData {
 	#[serde(rename = "CMYK")]
 	pub cmyk: CMYK,
 }
+
+impl ColorData {
+	pub fn new() -> Vec<Self> {
+		const JSON_DATA: &str = include_str!("../data/color.json");
+		serde_json::from_str(JSON_DATA).expect("颜色初始化失败！")
+	}
+}

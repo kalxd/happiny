@@ -17,8 +17,8 @@ pub struct MainWindow {
 }
 
 impl MainWindow {
-	fn new(app: &Application, colors: &[ColorData]) -> Self {
-		// let (sender, receiver) = glib::MainContext::channel(glib::source::Priority::DEFAULT);
+	fn new(app: &Application) -> Self {
+		let colors = ColorData::new();
 		let (sender, receiver) = async_channel::bounded(10);
 
 		let window = ApplicationWindow::builder()
@@ -46,7 +46,7 @@ impl MainWindow {
 			.build();
 		main_layout.pack_start(&header_search_bar.search_bar, false, false, 0);
 
-		let table_view = tableview::TableView::new(colors);
+		let table_view = tableview::TableView::new(&colors);
 		main_layout.pack_start(&table_view.layout, true, true, 0);
 
 		window.add(&main_layout);
@@ -59,8 +59,8 @@ impl MainWindow {
 		}
 	}
 
-	pub fn run(app: &Application, colors: &[ColorData]) {
-		let app = Self::new(app, colors);
+	pub fn run(app: &Application) {
+		let app = Self::new(app);
 		app.window.show_all();
 
 		glib::MainContext::default().spawn_local(async move {
