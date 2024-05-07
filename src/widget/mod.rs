@@ -32,7 +32,7 @@ impl MainWindow {
 		let main_layout = GtkBox::new(Orientation::Vertical, 0);
 
 		let header_tool_bar = headerbar::HeaderToolBar::new();
-		window.set_titlebar(Some(&header_tool_bar.header_bar));
+		window.set_titlebar(Some(header_tool_bar.as_ref()));
 
 		let header_search_bar = headerbar::HeaderSearchBar::new(sender.clone());
 		header_tool_bar

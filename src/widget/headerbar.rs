@@ -4,7 +4,7 @@ use gtk::{prelude::*, HeaderBar, Image, SearchBar, SearchEntry, ToggleButton};
 use super::action::AppAction;
 
 pub struct HeaderToolBar {
-	pub header_bar: HeaderBar,
+	header_bar: HeaderBar,
 	pub toggle_search_btn: ToggleButton,
 }
 
@@ -26,6 +26,12 @@ impl HeaderToolBar {
 			header_bar,
 			toggle_search_btn,
 		}
+	}
+}
+
+impl AsRef<HeaderBar> for HeaderToolBar {
+	fn as_ref(&self) -> &HeaderBar {
+		&self.header_bar
 	}
 }
 
