@@ -2,9 +2,9 @@ use gtk::{glib, prelude::ToValue};
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug, Clone)]
-pub struct RGB(u8, u8, u8);
+pub struct Rgb(u8, u8, u8);
 
-impl ToValue for RGB {
+impl ToValue for Rgb {
 	fn to_value(&self) -> glib::Value {
 		format!("rgb({}, {}, {})", self.0, self.1, self.2).to_value()
 	}
@@ -15,9 +15,9 @@ impl ToValue for RGB {
 }
 
 #[derive(Deserialize, Debug, Clone)]
-pub struct CMYK(u8, u8, u8, u8);
+pub struct Cmyk(u8, u8, u8, u8);
 
-impl ToValue for CMYK {
+impl ToValue for Cmyk {
 	fn to_value(&self) -> glib::Value {
 		format!("CMYK({}, {}, {}, {})", self.0, self.1, self.2, self.3).to_value()
 	}
@@ -37,9 +37,9 @@ pub struct ColorData {
 	#[serde(rename = "HEX")]
 	pub hex: String,
 	#[serde(rename = "RGB")]
-	pub rgb: RGB,
+	pub rgb: Rgb,
 	#[serde(rename = "CMYK")]
-	pub cmyk: CMYK,
+	pub cmyk: Cmyk,
 }
 
 impl ColorData {

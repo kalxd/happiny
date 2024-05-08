@@ -27,7 +27,7 @@ const COL_TYPE: &[glib::types::Type; 7] = &[
 	glib::types::Type::STRING,
 ];
 
-enum ColPosition {
+enum ColField {
 	ID = 0,
 	Name,
 	Pinyin,
@@ -35,6 +35,16 @@ enum ColPosition {
 	Rgb,
 	Cmyk,
 	Hex,
+}
+
+impl ColField {
+	fn into_i32(self) -> i32 {
+		self as i32
+	}
+
+	fn into_u32(self) -> u32 {
+		self as u32
+	}
 }
 
 struct ColorStore(TreeStore);
@@ -48,18 +58,18 @@ impl ColorStore {
 			model.set(
 				&iter,
 				&[
-					(ColPosition::ID as u32, &color.id),
-					(ColPosition::Name as u32, &color.name),
-					(ColPosition::Pinyin as u32, &color.pinyin),
-					(ColPosition::RgbBackground as u32, &color.rgb),
-					(ColPosition::Rgb as u32, &color.rgb),
-					(ColPosition::Cmyk as u32, &color.cmyk),
-					(ColPosition::Hex as u32, &color.hex),
+					(ColField::ID.into_u32(), &color.id),
+					(ColField::Name.into_u32(), &color.name),
+					(ColField::Pinyin.into_u32(), &color.pinyin),
+					(ColField::RgbBackground.into_u32(), &color.rgb),
+					(ColField::Rgb.into_u32(), &color.rgb),
+					(ColField::Cmyk.into_u32(), &color.cmyk),
+					(ColField::Hex.into_u32(), &color.hex),
 				],
 			);
 		}
 
-		return Self(model);
+		Self(model)
 	}
 }
 
@@ -92,7 +102,7 @@ impl TableView {
 		table.setup_columns();
 		table.connect_signals();
 
-		return table;
+		table
 	}
 
 	fn setup_columns(&self) {
@@ -100,7 +110,7 @@ impl TableView {
 			let text = CellRendererText::new();
 			let col = TreeViewColumn::builder().title("编号").build();
 			col.pack_start(&text, false);
-			col.add_attribute(&text, "text", ColPosition::ID as i32);
+			col.add_attribute(&text, "text", ColField::ID.into_i32());
 			self.view.append_column(&col);
 		}
 
@@ -108,7 +118,7 @@ impl TableView {
 			let text = CellRendererText::new();
 			let col = TreeViewColumn::builder().title("名称").build();
 			col.pack_start(&text, false);
-			col.add_attribute(&text, "text", ColPosition::Name as i32);
+			col.add_attribute(&text, "text", ColField::Name.into_i32());
 			self.view.append_column(&col);
 		}
 
@@ -116,7 +126,7 @@ impl TableView {
 			let text = CellRendererText::new();
 			let col = TreeViewColumn::builder().title("拼音").build();
 			col.pack_start(&text, false);
-			col.add_attribute(&text, "text", ColPosition::Pinyin as i32);
+			col.add_attribute(&text, "text", ColField::Pinyin.into_i32());
 			self.view.append_column(&col);
 		}
 
@@ -124,7 +134,7 @@ impl TableView {
 			let text = CellRendererText::new();
 			let col = TreeViewColumn::builder().title("明亮亮的颜色").build();
 			col.pack_start(&text, false);
-			col.add_attribute(&text, "background", ColPosition::RgbBackground as i32);
+			col.add_attribute(&text, "background", ColField::RgbBackground.into_i32());
 			self.view.append_column(&col);
 		}
 
@@ -132,7 +142,7 @@ impl TableView {
 			let text = CellRendererText::new();
 			let col = TreeViewColumn::builder().title("RGB").build();
 			col.pack_start(&text, false);
-			col.add_attribute(&text, "text", ColPosition::Rgb as i32);
+			col.add_attribute(&text, "text", ColField::Rgb.into_i32());
 			self.view.append_column(&col);
 		}
 
@@ -140,7 +150,7 @@ impl TableView {
 			let text = CellRendererText::new();
 			let col = TreeViewColumn::builder().title("CMYK").build();
 			col.pack_start(&text, false);
-			col.add_attribute(&text, "text", ColPosition::Cmyk as i32);
+			col.add_attribute(&text, "text", ColField::Cmyk.into_i32());
 			self.view.append_column(&col);
 		}
 
@@ -148,7 +158,7 @@ impl TableView {
 			let text = CellRendererText::new();
 			let col = TreeViewColumn::builder().title("HEX值").build();
 			col.pack_start(&text, true);
-			col.add_attribute(&text, "text", ColPosition::Hex as i32);
+			col.add_attribute(&text, "text", ColField::Hex.into_i32());
 			self.view.append_column(&col);
 		}
 	}
@@ -161,7 +171,7 @@ impl TableView {
 				.as_ref()
 				.and_then(|keyword| {
 					model
-						.value(&iter, ColPosition::Name as i32)
+						.value(iter, ColField::Name.into_i32())
 						.get::<String>()
 						.ok()
 						.map(|name| name.contains(keyword))
@@ -172,16 +182,16 @@ impl TableView {
 		self.view.connect_button_release_event(move |view, event| {
 			if event.button() == 3 {
 				if let Some((model, iter)) = view.selection().selected() {
-					let name = model.value(&iter, ColPosition::Name as i32);
+					let name = model.value(&iter, ColField::Name as i32);
 					let name = name.get().expect("name is empty");
 
-					let rgb = model.value(&iter, ColPosition::Rgb as i32);
+					let rgb = model.value(&iter, ColField::Rgb as i32);
 					let rgb = rgb.get().expect("rgb is empty");
 
-					let hex = model.value(&iter, ColPosition::Hex as i32);
+					let hex = model.value(&iter, ColField::Hex as i32);
 					let hex = hex.get().expect("hex is empty");
 
-					let cmyk = model.value(&iter, ColPosition::Cmyk as i32);
+					let cmyk = model.value(&iter, ColField::Cmyk as i32);
 					let cmyk = cmyk.get().expect("cmyk is empty");
 
 					let menu = colormenu::ColorMenu::new(&[name, hex, rgb, cmyk]);
