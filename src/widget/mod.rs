@@ -7,6 +7,7 @@ use crate::data::ColorData;
 mod action;
 mod colormenu;
 mod headerbar;
+mod searchbar;
 mod tableview;
 
 pub struct MainWindow {
@@ -34,17 +35,13 @@ impl MainWindow {
 		let header_tool_bar = headerbar::HeaderToolBar::new();
 		window.set_titlebar(Some(header_tool_bar.as_ref()));
 
-		let header_search_bar = headerbar::HeaderSearchBar::new(sender.clone());
+		let header_search_bar = searchbar::HeaderSearchBar::new(sender.clone());
 		header_tool_bar
 			.toggle_search_btn
-			.bind_property(
-				"active",
-				&header_search_bar.search_bar,
-				"search-mode-enabled",
-			)
+			.bind_property("active", header_search_bar.as_ref(), "search-mode-enabled")
 			.flags(glib::BindingFlags::BIDIRECTIONAL)
 			.build();
-		main_layout.pack_start(&header_search_bar.search_bar, false, false, 0);
+		main_layout.pack_start(header_search_bar.as_ref(), false, false, 0);
 
 		let table_view = tableview::TableView::new(&colors);
 		main_layout.pack_start(&table_view.layout, true, true, 0);
