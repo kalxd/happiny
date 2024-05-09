@@ -1,5 +1,5 @@
 use async_channel::{Receiver, Sender};
-use gtk::prelude::{BoxExt, ContainerExt, GtkWindowExt, ObjectExt, WidgetExt};
+use gtk::prelude::{BoxExt, ContainerExt, GtkWindowExt, WidgetExt};
 use gtk::{glib, Application, ApplicationWindow, Box as GtkBox, Orientation};
 
 use crate::data::ColorData;
@@ -36,11 +36,7 @@ impl MainWindow {
 		window.set_titlebar(Some(header_tool_bar.as_ref()));
 
 		let header_search_bar = searchbar::HeaderSearchBar::new(sender.clone());
-		header_tool_bar
-			.toggle_search_btn
-			.bind_property("active", header_search_bar.as_ref(), "search-mode-enabled")
-			.flags(glib::BindingFlags::BIDIRECTIONAL)
-			.build();
+		header_tool_bar.connect_searchbar(&header_search_bar);
 		main_layout.pack_start(header_search_bar.as_ref(), false, false, 0);
 
 		let table_view = tableview::TableView::new(&colors);
@@ -69,16 +65,5 @@ impl MainWindow {
 				}
 			}
 		});
-
-		/*
-			app.receiver.attach(None, move |action| {
-				match action {
-					action::AppAction::StartSearch(key) => {
-						app.table_view.filter(key);
-					}
-				}
-				glib::ControlFlow::Continue
-		});
-			*/
 	}
 }

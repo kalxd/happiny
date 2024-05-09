@@ -1,8 +1,8 @@
-use gtk::{prelude::*, HeaderBar, Image, ToggleButton};
+use gtk::{glib, prelude::*, HeaderBar, Image, SearchBar, ToggleButton};
 
 pub struct HeaderToolBar {
 	header_bar: HeaderBar,
-	pub toggle_search_btn: ToggleButton,
+	toggle_search_btn: ToggleButton,
 }
 
 impl HeaderToolBar {
@@ -23,6 +23,13 @@ impl HeaderToolBar {
 			header_bar,
 			toggle_search_btn,
 		}
+	}
+
+	pub fn connect_searchbar<T: AsRef<SearchBar>>(&self, bar: &T) {
+		self.toggle_search_btn
+			.bind_property("active", bar.as_ref(), "search-mode-enabled")
+			.flags(glib::BindingFlags::BIDIRECTIONAL)
+			.build();
 	}
 }
 
