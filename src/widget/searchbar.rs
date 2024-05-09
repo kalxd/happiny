@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use async_channel::Sender;
 use gtk::{
 	prelude::{ContainerExt, EntryExt, SearchBarExt},
@@ -29,6 +31,14 @@ impl HeaderSearchBar {
 
 impl AsRef<SearchBar> for HeaderSearchBar {
 	fn as_ref(&self) -> &SearchBar {
+		&self.search_bar
+	}
+}
+
+impl Deref for HeaderSearchBar {
+	type Target = SearchBar;
+
+	fn deref(&self) -> &Self::Target {
 		&self.search_bar
 	}
 }

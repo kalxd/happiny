@@ -25,9 +25,9 @@ impl HeaderToolBar {
 		}
 	}
 
-	pub fn connect_searchbar<T: AsRef<SearchBar>>(&self, bar: &T) {
+	pub fn connect_searchbar(&self, bar: &SearchBar) {
 		self.toggle_search_btn
-			.bind_property("active", bar.as_ref(), "search-mode-enabled")
+			.bind_property("active", bar, "search-mode-enabled")
 			.flags(glib::BindingFlags::BIDIRECTIONAL)
 			.build();
 	}
