@@ -1,8 +1,10 @@
 use async_channel::Receiver;
-use gtk::prelude::{BoxExt, ContainerExt, GtkWindowExt, WidgetExt};
+use gtk::prelude::{BoxExt, ContainerExt, GtkWindowExt, SearchBarExt, WidgetExt};
 use gtk::{glib, Application, ApplicationWindow, Box as GtkBox, Orientation};
 
 use crate::data::ColorData;
+
+use self::searchbar::HeaderSearchBar;
 
 mod action;
 mod colormenu;
@@ -13,6 +15,7 @@ mod tableview;
 pub struct MainWindow {
 	window: ApplicationWindow,
 	table_view: tableview::TableView,
+	header_search_bar: HeaderSearchBar,
 	receiver: Receiver<action::AppAction>,
 }
 
@@ -36,6 +39,15 @@ impl MainWindow {
 
 		let header_search_bar = searchbar::HeaderSearchBar::new(sender.clone());
 		header_tool_bar.connect_searchbar(&header_search_bar);
+		window.connect_key_press_event({
+			let sender = sender.clone();
+			move |_, event| {
+				sender
+					.try_send(action::AppAction::WindowKeyPress(event.clone()))
+					.unwrap();
+				glib::Propagation::Proceed
+			}
+		});
 		main_layout.pack_start(header_search_bar.as_ref(), false, false, 0);
 
 		let table_view = tableview::TableView::new(&colors);
@@ -46,6 +58,7 @@ impl MainWindow {
 		Self {
 			window,
 			table_view,
+			header_search_bar,
 			receiver,
 		}
 	}
@@ -59,6 +72,9 @@ impl MainWindow {
 				match msg {
 					action::AppAction::StartSearch(key) => {
 						app.table_view.filter(key);
+					}
+					action::AppAction::WindowKeyPress(event) => {
+						app.header_search_bar.handle_event(&event);
 					}
 				}
 			}
