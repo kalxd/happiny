@@ -1,4 +1,4 @@
-use async_channel::{Receiver, Sender};
+use async_channel::Receiver;
 use gtk::prelude::{BoxExt, ContainerExt, GtkWindowExt, WidgetExt};
 use gtk::{glib, Application, ApplicationWindow, Box as GtkBox, Orientation};
 
@@ -14,7 +14,6 @@ pub struct MainWindow {
 	window: ApplicationWindow,
 	table_view: tableview::TableView,
 	receiver: Receiver<action::AppAction>,
-	_sender: Sender<action::AppAction>,
 }
 
 impl MainWindow {
@@ -48,7 +47,6 @@ impl MainWindow {
 			window,
 			table_view,
 			receiver,
-			_sender: sender,
 		}
 	}
 
