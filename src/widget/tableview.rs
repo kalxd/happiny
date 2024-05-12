@@ -171,7 +171,7 @@ impl TableView {
 				.as_ref()
 				.and_then(|keyword| {
 					model
-						.value(iter, ColField::Name.into_i32())
+						.value(iter, ColField::Pinyin.into_i32())
 						.get::<String>()
 						.ok()
 						.map(|name| name.contains(keyword))
