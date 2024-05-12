@@ -1,10 +1,13 @@
-use async_channel::Receiver;
+use futures::channel::mpsc::{channel, Receiver};
+use futures::StreamExt;
 use gtk::prelude::{BoxExt, ContainerExt, GtkWindowExt, SearchBarExt, WidgetExt};
 use gtk::{glib, Application, ApplicationWindow, Box as GtkBox, Orientation};
 
-use crate::data::ColorData;
+use std::future::ready;
+use std::sync::{Arc, Mutex};
 
 use self::searchbar::HeaderSearchBar;
+use crate::data::ColorData;
 
 mod action;
 mod colormenu;
@@ -22,7 +25,8 @@ pub struct MainWindow {
 impl MainWindow {
 	fn new(app: &Application) -> Self {
 		let colors = ColorData::new();
-		let (sender, receiver) = async_channel::bounded(10);
+		let (sender, receiver) = channel(10);
+		let sender = Arc::new(Mutex::new(sender));
 
 		let window = ApplicationWindow::builder()
 			.application(app)
@@ -40,9 +44,10 @@ impl MainWindow {
 		let header_search_bar = searchbar::HeaderSearchBar::new(sender.clone());
 		header_tool_bar.connect_searchbar(&header_search_bar);
 		window.connect_key_press_event({
-			let sender = sender.clone();
 			move |_, event| {
 				sender
+					.lock()
+					.unwrap()
 					.try_send(action::AppAction::WindowKeyPress(event.clone()))
 					.unwrap();
 				glib::Propagation::Proceed
@@ -68,16 +73,20 @@ impl MainWindow {
 		app.window.show_all();
 
 		glib::MainContext::default().spawn_local(async move {
-			while let Ok(msg) = app.receiver.recv().await {
-				match msg {
-					action::AppAction::StartSearch(key) => {
-						app.table_view.filter(key);
+			app.receiver
+				.for_each(move |msg| {
+					match msg {
+						action::AppAction::StartSearch(key) => {
+							app.table_view.filter(key);
+						}
+						action::AppAction::WindowKeyPress(event) => {
+							app.header_search_bar.handle_event(&event);
+						}
 					}
-					action::AppAction::WindowKeyPress(event) => {
-						app.header_search_bar.handle_event(&event);
-					}
-				}
-			}
+
+					ready(())
+				})
+				.await;
 		});
 	}
 }

@@ -1,6 +1,7 @@
 use std::ops::Deref;
+use std::sync::{Arc, Mutex};
 
-use async_channel::Sender;
+use futures::channel::mpsc::Sender;
 use gtk::{
 	prelude::{ContainerExt, EntryExt, SearchBarExt},
 	SearchBar, SearchEntry,
@@ -13,12 +14,19 @@ pub struct HeaderSearchBar {
 }
 
 impl HeaderSearchBar {
-	pub fn new(sender: Sender<AppAction>) -> Self {
+	pub fn new(sender: Arc<Mutex<Sender<AppAction>>>) -> Self {
 		let entry = SearchEntry::builder().placeholder_text("颜色").build();
 
-		entry.connect_activate(move |entry| {
-			let text = entry.text().as_str().trim().to_string();
-			sender.try_send(AppAction::StartSearch(text)).unwrap();
+		entry.connect_activate({
+			let sender = sender.clone();
+			move |entry| {
+				let text = entry.text().as_str().trim().to_string();
+				sender
+					.lock()
+					.unwrap()
+					.try_send(AppAction::StartSearch(text))
+					.unwrap();
+			}
 		});
 
 		let search_bar = SearchBar::builder().show_close_button(true).build();
