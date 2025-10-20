@@ -1,7 +1,11 @@
 #include "mainwindow.h"
+#include <gtkmm/scrolledwindow.h>
 
 namespace XGApp {
 	MainWindow::MainWindow() {
-		this->set_default_size(800, 800);
+        Gtk::ScrolledWindow sw;
+
+        this->set_child(sw);
+        this->set_default_size(800, 800);
 	}
 }
