@@ -8,6 +8,11 @@ crate-type = ["staticlib"]
 
 [dependencies]
 cxx = "1.0.187"
+serde_json = "1.0.145"
+
+[dependencies.serde]
+version = "1.0.228"
+features = ["derive"]
 
 [build-dependencies]
 cxx-build = "1.0.187"

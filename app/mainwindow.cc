@@ -2,6 +2,7 @@
 #include <QBoxLayout>
 #include <qpushbutton.h>
 #include "lib.rs.h"
+#include <QDebug>
 
 namespace XGApp {
 	MainWindow::MainWindow() {
@@ -16,6 +17,10 @@ namespace XGApp {
     }
 
     void MainWindow::showHello() const {
-		say_hello();
+		auto colors = XGFFI::readColorItem();
+		qDebug() << colors.size();
+        for (const auto &item : colors) {
+            qDebug() << item.getId();
+        }
     }
 }
