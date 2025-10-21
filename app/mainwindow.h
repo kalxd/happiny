@@ -1,12 +1,17 @@
-#ifndef XGMAINWINDOW
-#define XGMAINWINDOW
+#ifndef XGAPP_MAINWINDOW
+#define XGAPP_MAINWINDOW
 
-#include <gtkmm/applicationwindow.h>
+#include <QWidget>
+#include <qpushbutton.h>
 
 namespace XGApp {
-	class MainWindow : public Gtk::ApplicationWindow {
+	class MainWindow : public QWidget {
+    private:
+        QPushButton *btn;
     public:
 		explicit MainWindow();
+    public slots:
+        void showHello() const;
 	};
 }
 

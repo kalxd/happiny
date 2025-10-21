@@ -1,20 +1,21 @@
 #include "mainwindow.h"
-#include <gtkmm/scrolledwindow.h>
-#include <gtkmm/button.h>
-#include <gtkmm/box.h>
-#include <gtkmm/scrolledwindow.h>
+#include <QBoxLayout>
+#include <qpushbutton.h>
 #include "lib.rs.h"
 
 namespace XGApp {
 	MainWindow::MainWindow() {
+        auto mainLayout = new QVBoxLayout;
 
-        Gtk::Box main_layout;
+        this->btn = new QPushButton("hello sb");
+        mainLayout->addWidget(this->btn);
+        connect(this->btn, &QPushButton::clicked, this, &MainWindow::showHello);
 
-        Gtk::Button btn("点击我");
-        btn.signal_clicked().connect(sigc::ptr_fun(&say_hello));
-        main_layout.append(btn);
+        this->setLayout(mainLayout);
+        this->resize(800, 800);
+    }
 
-        this->set_child(main_layout);
-        this->set_default_size(800, 800);
-	}
+    void MainWindow::showHello() const {
+		say_hello();
+    }
 }
