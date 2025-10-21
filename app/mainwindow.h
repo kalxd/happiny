@@ -2,7 +2,7 @@
 #define XGAPP_MAINWINDOW
 
 #include <QWidget>
-#include <qpushbutton.h>
+#include <QPushButton>
 
 namespace XGApp {
 	class MainWindow : public QWidget {

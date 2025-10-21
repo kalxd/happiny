@@ -21,6 +21,7 @@ endif()
 qt_add_executable(happiny
   app/main.cc
   app/mainwindow.cc
+  app/table.cc
 )
 
 target_link_libraries(
