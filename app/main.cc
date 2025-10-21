@@ -1,6 +1,11 @@
-#include "mainwindow.h"
+#include <QApplication>
+#include <QPushButton>
 
 int main(int argc, char *argv[]) {
-	auto app = Gtk::Application::create("person.xgley.happiny");
-	return app->make_window_and_run<XGApp::MainWindow>(argc, argv);
+	QApplication app(argc, argv);
+
+    QPushButton btn("hello");
+    btn.show();
+
+    return app.exec();
 }
