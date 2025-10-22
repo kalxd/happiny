@@ -1,5 +1,6 @@
 #include "table.h"
 #include <qnamespace.h>
+#include <string>
 
 namespace XGApp {
 	TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent) {
@@ -47,14 +48,32 @@ namespace XGApp {
 			return {};
         }
 
+        const auto &data = this->colors[idx.row()];
+		const auto col = idx.column();
+
         if (role == Qt::DisplayRole) {
-			const auto &data = this->colors[idx.row()];
-			const auto col = idx.column();
             if (col == 0) {
-                return data.getId();
+                return data.id;
+            } else if (col == 1) {
+				return QString::fromStdString(static_cast<std::string>(data.name));
+            } else if (col == 2) {
+				return QString::fromStdString(static_cast<std::string>(data.pinyin));
+            } else if (col == 4) {
+				auto const &rgb = data.rgb;
+				return QString("rgb(%1, %2, %3)").arg(rgb[0]).arg(rgb[1]).arg(rgb[2]);
+            } else if (col == 5) {
+				auto const &cmyk = data.cmyk;
+				return QString("cmyk(%1, %2, %3, %4)").arg(cmyk[0]).arg(cmyk[1]).arg(cmyk[2]).arg(cmyk[3]);
+            } else if (col == 6) {
+				return QString::fromStdString(static_cast<std::string>(data.hex));
             }
 
             return {};
+        } else if (role == Qt::BackgroundRole) {
+			if (col == 3) {
+				const auto &rgb = data.rgb;
+				return QColor(rgb[0], rgb[1], rgb[2]);
+			}
         }
 
         return {};
