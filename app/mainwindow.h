@@ -1,17 +1,17 @@
 #ifndef XGAPP_MAINWINDOW
 #define XGAPP_MAINWINDOW
 
+#include "table.h"
 #include <QWidget>
 #include <QPushButton>
 
 namespace XGApp {
 	class MainWindow : public QWidget {
     private:
-        QPushButton *btn;
+		XGApp::Table *table;
+		XGApp::TableModel *model;
     public:
 		explicit MainWindow();
-    public slots:
-        void showHello() const;
 	};
 }
 

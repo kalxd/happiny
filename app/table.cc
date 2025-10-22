@@ -1,7 +1,10 @@
 #include "table.h"
+#include <qnamespace.h>
 
 namespace XGApp {
-	TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent) {}
+	TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent) {
+		this->colors = std::move(XGFFI::readColorItem());
+	}
 
     int TableModel::rowCount(const QModelIndex &idx) const {
         return this->colors.size();
@@ -13,6 +16,10 @@ namespace XGApp {
                                     int role) const {
 
 		if (role != Qt::DisplayRole) {
+			return {};
+        }
+
+        if (orientation != Qt::Horizontal) {
 			return {};
         }
 
@@ -34,4 +41,24 @@ namespace XGApp {
 
         return {};
     }
+
+    QVariant TableModel::data(const QModelIndex &idx, int role) const {
+		if (!idx.isValid()) {
+			return {};
+        }
+
+        if (role == Qt::DisplayRole) {
+			const auto &data = this->colors[idx.row()];
+			const auto col = idx.column();
+            if (col == 0) {
+                return data.getId();
+            }
+
+            return {};
+        }
+
+        return {};
+    }
+
+	Table::Table(QWidget *parent) : QTableView(parent) {}
 }
