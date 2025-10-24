@@ -84,7 +84,10 @@ namespace XGApp {
 
     void Table::keyPressEvent(QKeyEvent *event) {
 		if (event->matches(QKeySequence::Copy)) {
-			qDebug() << "do this?";
+            if (const auto &index = this->selectedIndexes(); !index.isEmpty()) {
+				auto first = index.constFirst();
+                qDebug() << "do this?";
+            }
         }
 
 		QTableView::keyPressEvent(event);
