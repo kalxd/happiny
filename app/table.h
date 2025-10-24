@@ -23,6 +23,9 @@ namespace XGApp {
     class Table : public QTableView {
     public:
 		explicit Table(QWidget *parent = nullptr);
+
+    private:
+        void keyPressEvent(QKeyEvent *event) override;
     };
 }
 

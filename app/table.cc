@@ -1,10 +1,11 @@
 #include "table.h"
-#include <qnamespace.h>
 #include <string>
+#include <QKeyEvent>
+#include <QDebug>
 
 namespace XGApp {
 	TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent) {
-		this->colors = std::move(XGFFI::readColorItem());
+        this->colors = std::move(XGFFI::readColorItem());
 	}
 
     int TableModel::rowCount(const QModelIndex &idx) const {
@@ -55,9 +56,9 @@ namespace XGApp {
             if (col == 0) {
                 return data.id;
             } else if (col == 1) {
-				return QString::fromStdString(static_cast<std::string>(data.name));
+				return QString::fromStdString((std::string)data.name);
             } else if (col == 2) {
-				return QString::fromStdString(static_cast<std::string>(data.pinyin));
+				return QString::fromStdString((std::string)data.pinyin);
             } else if (col == 4) {
 				auto const &rgb = data.rgb;
 				return QString("rgb(%1, %2, %3)").arg(rgb[0]).arg(rgb[1]).arg(rgb[2]);
@@ -79,5 +80,13 @@ namespace XGApp {
         return {};
     }
 
-	Table::Table(QWidget *parent) : QTableView(parent) {}
+    Table::Table(QWidget *parent) : QTableView(parent) {}
+
+    void Table::keyPressEvent(QKeyEvent *event) {
+		if (event->matches(QKeySequence::Copy)) {
+			qDebug() << "do this?";
+        }
+
+		QTableView::keyPressEvent(event);
+    }
 }
