@@ -2,6 +2,8 @@
 #include <string>
 #include <QKeyEvent>
 #include <QDebug>
+#include <QApplication>
+#include <QClipboard>
 
 namespace XGApp {
 	TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent) {
@@ -86,7 +88,12 @@ namespace XGApp {
 		if (event->matches(QKeySequence::Copy)) {
             if (const auto &index = this->selectedIndexes(); !index.isEmpty()) {
 				auto first = index.constFirst();
-                qDebug() << "do this?";
+                auto data = this->model()->data(first);
+
+                if (auto text = data.toString(); !text.isNull()) {
+					const auto clipboard = QApplication::clipboard();
+					clipboard->setText(text);
+                }
             }
         }
 
