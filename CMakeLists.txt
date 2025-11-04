@@ -12,7 +12,7 @@ qt_standard_project_setup(REQUIRES 6.5)
 # xgffi
 include_directories(${CMAKE_SOURCE_DIR}/xgffi/target/cxxbridge/xgffi/src)
 
-if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
   set(LIB_XGFFI ${CMAKE_SOURCE_DIR}/xgffi/target/release/libxgffi.a)
 else()
   set(LIB_XGFFI ${CMAKE_SOURCE_DIR}/xgffi/target/debug/libxgffi.a)
