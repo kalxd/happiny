@@ -1,7 +1,5 @@
 #include "mainwindow.h"
-#include <QBoxLayout>
 #include <QFormLayout>
-#include <QDebug>
 
 namespace XGApp {
 	MainWindow::MainWindow() {
@@ -9,8 +7,8 @@ namespace XGApp {
 
         auto searchLayout = new QFormLayout;
 
-        this->searchEdit = new QLineEdit;
-        searchLayout->addRow("搜索", this->searchEdit);
+        this->searchLine = new XGWidget::SearchLine;
+        searchLayout->addRow("搜索", this->searchLine);
         mainLayout->addLayout(searchLayout);
 
         this->model = new XGApp::TableModel;

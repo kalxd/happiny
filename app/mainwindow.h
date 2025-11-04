@@ -2,16 +2,14 @@
 #define XGAPP_MAINWINDOW
 
 #include "table.h"
-#include <QWidget>
-#include <QPushButton>
-#include <QLineEdit>
+#include "searchline.h"
 
 namespace XGApp {
 	class MainWindow : public QWidget {
     private:
 		XGApp::Table *table;
         XGApp::TableModel *model;
-        QLineEdit *searchEdit;
+        XGWidget::SearchLine *searchLine;
     public:
 		explicit MainWindow();
 	};
