@@ -10,18 +10,19 @@ namespace XGApp {
         auto searchLayout = new QFormLayout;
 
         this->searchLine = new XGWidget::SearchLine;
-        connect(this->searchLine, &XGWidget::SearchLine::search, this,
-                [](auto word) {
-					qDebug() << word;
-				});
 
-        searchLayout->addRow("搜索", this->searchLine);
+        searchLayout->addRow("搜索拼音", this->searchLine);
         mainLayout->addLayout(searchLayout);
 
         this->model = new XGApp::TableModel;
-        this->table = new XGApp::Table;
+        this->proxyModel = new QSortFilterProxyModel(this);
+        this->proxyModel->setSourceModel(this->model);
+        this->proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+        this->proxyModel->setFilterKeyColumn(2);
+        connect(this->searchLine, &XGWidget::SearchLine::search, this->proxyModel, &QSortFilterProxyModel::setFilterWildcard);
 
-        this->table->setModel(this->model);
+        this->table = new XGApp::Table;
+        this->table->setModel(this->proxyModel);
         mainLayout->addWidget(this->table);
 
         this->setLayout(mainLayout);

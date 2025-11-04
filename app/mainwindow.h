@@ -3,6 +3,7 @@
 
 #include "table.h"
 #include "searchline.h"
+#include <QSortFilterProxyModel>
 
 namespace XGApp {
 	class MainWindow : public QWidget {
@@ -10,6 +11,10 @@ namespace XGApp {
 		XGApp::Table *table;
         XGApp::TableModel *model;
         XGWidget::SearchLine *searchLine;
+        QSortFilterProxyModel *proxyModel;
+
+    private slots:
+        void filterSearch(const QString &word);
     public:
 		explicit MainWindow();
 	};
