@@ -7,12 +7,19 @@
 
 namespace XGWidget {
 	class SearchLine : public QHBoxLayout {
+		Q_OBJECT
     private:
 		QLineEdit *searchLine;
-		QPushButton *searchBtn;
+        QPushButton *searchBtn;
+
+    private slots:
+        void startSearch();
 
     public:
-        explicit SearchLine(QWidget *parent = nullptr);
+		explicit SearchLine(QWidget *parent = nullptr);
+
+    signals:
+        void search(const QString &word);
 	};
 }
 
