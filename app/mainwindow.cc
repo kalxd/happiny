@@ -23,6 +23,7 @@ namespace XGApp {
 
         this->table = new XGApp::Table;
         this->table->setModel(this->proxyModel);
+        this->table->setSelectionMode(QTableView::SingleSelection);
         mainLayout->addWidget(this->table);
 
         this->setLayout(mainLayout);
